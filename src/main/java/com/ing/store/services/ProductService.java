@@ -6,6 +6,7 @@ import com.ing.store.exceptions.ProductNotFoundException;
 import com.ing.store.mappers.ProductMapper;
 import com.ing.store.repositories.ProductRepo;
 import io.vavr.control.Try;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,10 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+    @NonNull
     private ProductRepo productRepo;
+
+    @NonNull
     private ProductMapper productMapper;
 
     public ProductDto findProduct(String name, Long id) {
