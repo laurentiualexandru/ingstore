@@ -1,6 +1,6 @@
 package com.ing.store.controllers;
 
-import com.ing.store.entities.Product;
+import com.ing.store.dto.ProductDto;
 import com.ing.store.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,8 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/productSearch")
-    public ResponseEntity<Product> findProduct(@RequestParam(required = true) String name, @RequestParam(required = false) Long id) {
-        Product product = productService.findProduct(name, id);
-
+    public ResponseEntity<ProductDto> findProduct(@RequestParam(required = true) String name, @RequestParam(required = false) Long id) {
+        ProductDto product = productService.findProduct(name, id);
         return ResponseEntity.ok(product);
     }
 
