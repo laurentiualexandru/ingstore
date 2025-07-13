@@ -2,9 +2,11 @@ package com.ing.store.services;
 
 import com.ing.store.dto.ProductDto;
 import com.ing.store.entities.Product;
+import com.ing.store.exceptions.ProductException;
 import com.ing.store.exceptions.ProductNotFoundException;
 import com.ing.store.mappers.ProductMapper;
 import com.ing.store.repositories.ProductRepo;
+import com.ing.store.requests.ProductRequest;
 import io.vavr.control.Try;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,18 @@ public class ProductService {
                         throw new ProductNotFoundException("Id  does not exist", ex);
                     });
         }
+
         return productMapper.productToProductDto(product);
+    }
+
+    public ProductDto addProduct(ProductRequest productRequest) {
+        if (productRepo.findByName(productRequest.name()).isPresent()) {
+            throw new ProductException("Product already exists with this name");
+        }
+        Product product = productMapper.productRequestToProduct(productRequest);
+        Product savedProduct = productRepo.saveAndFlush(product);
+
+        return productMapper.productToProductDto(savedProduct);
     }
 
 }
