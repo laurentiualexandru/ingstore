@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
     ProductDto productToProductDto(Product product);
-    Product productDtoToProduct(ProductDto productDto);
+    //Product productDtoToProduct(ProductDto productDto);
 }
