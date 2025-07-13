@@ -20,7 +20,7 @@ public class ProductService {
     public ProductDto findProduct(String name, Long id) {
         Product product;
         if (!Objects.isNull(name)) {
-            product = productRepo.finByIdAndName(id, name).orElseThrow(() -> new ProductNotFoundException("Id with the given name does not exist"));
+            product = productRepo.findByIdAndName(id, name).orElseThrow(() -> new ProductNotFoundException("Id with the given name does not exist"));
         } else {
             product = Try.of(() -> productRepo.getReferenceById(id)).
                     getOrElseThrow((Throwable ex) -> {

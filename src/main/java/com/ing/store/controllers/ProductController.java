@@ -17,7 +17,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/productSearch")
-    public ResponseEntity<ProductDto> findProduct(@RequestParam(required = true) String name, @RequestParam(required = false) Long id) {
+    public ResponseEntity<ProductDto> findProduct(@RequestParam(required = false) String name, @RequestParam(required = true) Long id) {
         ProductDto product = productService.findProduct(name, id);
         return ResponseEntity.ok(product);
     }
