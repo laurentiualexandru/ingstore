@@ -8,20 +8,17 @@ import com.ing.store.mappers.ProductMapper;
 import com.ing.store.repositories.ProductRepo;
 import com.ing.store.requests.ProductRequest;
 import io.vavr.control.Try;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    @NonNull
-    private ProductRepo productRepo;
-
-    @NonNull
-    private ProductMapper productMapper;
+    private final ProductRepo productRepo;
+    private final ProductMapper productMapper;
 
     public ProductDto findProduct(String name, Long id) {
         Product product;
@@ -48,11 +45,12 @@ public class ProductService {
     }
 
     public ProductDto patchProductPrice(ProductRequest productRequest) {
-        if (productRepo.findByName(productRequest.name()).isEmpty()) {
+        Optional<Product> product = productRepo.findByName(productRequest.name());
+        if (product.isEmpty()) {
             throw new ProductException("Product with this name does not exist");
         }
-        Product product = productMapper.productRequestToProduct(productRequest);
-        Product savedProduct = productRepo.saveAndFlush(product);
+        product.get().setPrice(productRequest.price());
+        Product savedProduct = productRepo.saveAndFlush(product.get());
 
         return productMapper.productToProductDto(savedProduct);
     }
