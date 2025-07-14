@@ -6,6 +6,6 @@ import com.ing.store.validators.*;
 @ValidPatchProduct(groups = PatchGroup.class)
 @ValidGetProduct(groups = GetGroup.class)
 public record ProductRequest (String name,
-                              Float price,
+                              Double price,
                               Integer quantity) {
 }
