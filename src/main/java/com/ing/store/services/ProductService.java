@@ -9,6 +9,7 @@ import com.ing.store.repositories.ProductRepo;
 import com.ing.store.requests.ProductRequest;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
     private final ProductRepo productRepo;
     private final ProductMapper productMapper;
@@ -30,6 +32,7 @@ public class ProductService {
                         throw new ProductNotFoundException("Id  does not exist", ex);
                     });
         }
+        log.info("Product with name: {} was found.", name);
 
         return productMapper.productToProductDto(product);
     }
@@ -40,7 +43,7 @@ public class ProductService {
         }
         Product product = productMapper.productRequestToProduct(productRequest);
         Product savedProduct = productRepo.saveAndFlush(product);
-
+        log.info("Product with name: {} was added . Id: {}", savedProduct.getName(), savedProduct.getId());
         return productMapper.productToProductDto(savedProduct);
     }
 
@@ -51,6 +54,7 @@ public class ProductService {
         }
         product.get().setPrice(productRequest.price());
         Product savedProduct = productRepo.saveAndFlush(product.get());
+        log.info("Product with name: {} was patched.", savedProduct.getName());
 
         return productMapper.productToProductDto(savedProduct);
     }
