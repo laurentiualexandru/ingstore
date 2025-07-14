@@ -3,14 +3,14 @@ package com.ing.store.controllers;
 import com.ing.store.dto.ProductDto;
 import com.ing.store.requests.ProductRequest;
 import com.ing.store.services.ProductService;
+import com.ing.store.validators.AddGroup;
+import com.ing.store.validators.PatchGroup;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import validators.AddProductValidator;
 
 @RestController
 @RequestMapping("/api/products")
@@ -27,8 +27,8 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<ProductDto> addProduct(@Validated @RequestBody ProductRequest addProductRequest, BindingResult bindingResult) {
+    @PostMapping("/product")
+    public ResponseEntity<ProductDto> addProduct(@Validated(AddGroup.class) @RequestBody ProductRequest addProductRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
@@ -36,9 +36,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.addProduct(addProductRequest));
     }
 
-    @InitBinder(value = "addProductRequest")
-    public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new AddProductValidator());
-    }
+    @PatchMapping("/productPrice")
+    public ResponseEntity<ProductDto> updateProductPrice(@Validated(PatchGroup.class) @RequestBody ProductRequest patchProductRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
 
+        return ResponseEntity.ok(productService.patchProductPrice(patchProductRequest));
+    }
 }

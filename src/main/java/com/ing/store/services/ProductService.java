@@ -47,4 +47,13 @@ public class ProductService {
         return productMapper.productToProductDto(savedProduct);
     }
 
+    public ProductDto patchProductPrice(ProductRequest productRequest) {
+        if (productRepo.findByName(productRequest.name()).isEmpty()) {
+            throw new ProductException("Product with this name does not exist");
+        }
+        Product product = productMapper.productRequestToProduct(productRequest);
+        Product savedProduct = productRepo.saveAndFlush(product);
+
+        return productMapper.productToProductDto(savedProduct);
+    }
 }
