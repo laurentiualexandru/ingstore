@@ -2,8 +2,8 @@ package com.ing.store.services;
 
 import com.ing.store.dto.ProductDto;
 import com.ing.store.entities.Product;
-import com.ing.store.exceptions.ProductException;
-import com.ing.store.exceptions.ProductNotFoundException;
+import com.ing.store.exceptions.ResourceException;
+import com.ing.store.exceptions.ResourceNotFoundException;
 import com.ing.store.mappers.ProductMapper;
 import com.ing.store.repositories.ProductRepo;
 import com.ing.store.requests.ProductRequest;
@@ -25,11 +25,11 @@ public class ProductService {
     public ProductDto findProduct(String name, Long id) {
         Product product;
         if (!Objects.isNull(name)) {
-            product = productRepo.findByIdAndName(id, name).orElseThrow(() -> new ProductNotFoundException("Id with the given name does not exist"));
+            product = productRepo.findByIdAndName(id, name).orElseThrow(() -> new ResourceNotFoundException("Id with the given name does not exist"));
         } else {
             product = Try.of(() -> productRepo.getReferenceById(id)).
                     getOrElseThrow((Throwable ex) -> {
-                        throw new ProductNotFoundException("Id  does not exist", ex);
+                        throw new ResourceNotFoundException("Id  does not exist", ex);
                     });
         }
         log.info("Product with name: {} was found.", name);
@@ -39,7 +39,7 @@ public class ProductService {
 
     public ProductDto addProduct(ProductRequest productRequest) {
         if (productRepo.findByName(productRequest.name()).isPresent()) {
-            throw new ProductException("Product already exists with this name");
+            throw new ResourceException("Product already exists with this name");
         }
         Product product = productMapper.productRequestToProduct(productRequest);
         Product savedProduct = productRepo.saveAndFlush(product);
@@ -50,7 +50,7 @@ public class ProductService {
     public ProductDto patchProductPrice(ProductRequest productRequest) {
         Optional<Product> product = productRepo.findByName(productRequest.name());
         if (product.isEmpty()) {
-            throw new ProductException("Product with this name does not exist");
+            throw new ResourceException("Product with this name does not exist");
         }
         product.get().setPrice(productRequest.price());
         Product savedProduct = productRepo.saveAndFlush(product.get());
