@@ -23,12 +23,12 @@ public class ControllerAdviceHandler {
 
     @ExceptionHandler(ResourceException.class)
     public ResponseEntity<ApiError> handleResourceNotFound(ResourceException ex) {
-        log.error("Product error: {}", ex.getMessage());
+        log.error("Resource error: {}", ex.getMessage());
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleResourceNotFound(Exception ex) {
         log.error("General error: {}", ex.getMessage());
         ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
